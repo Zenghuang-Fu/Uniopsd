@@ -1,0 +1,23 @@
+defaults:
+  - uniopsd
+  - _self_
+
+data:
+  max_prompt_length: 4096
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 64
+    ppo_micro_batch_size_per_gpu: 8
+  rollout:
+    log_prob_micro_batch_size_per_gpu: 16
+  ref:
+    log_prob_micro_batch_size_per_gpu: 16
+env:
+  env_name: Webshop
+  max_steps: 15
+  history_length: 2
+  webshop:
+    use_small: true
+
+trainer:
+  experiment_name: webshop_corr_3b

@@ -1,0 +1,95 @@
+defaults:
+  - ppo_trainer
+  - _self_
+
+data:
+  train_files: data/agent/text/train.parquet
+  val_files: data/agent/text/test.parquet
+  train_batch_size: 16
+  val_batch_size: 128
+  max_prompt_length: 2048
+  max_response_length: 512
+  filter_overlong_prompts: true
+  truncation: error
+  return_raw_chat: true
+actor_rollout_ref:
+  model:
+    path: Qwen/Qwen2.5-3B-Instruct
+    use_remove_padding: true
+    enable_gradient_checkpointing: true
+  actor:
+    ppo_mini_batch_size: 256
+    ppo_micro_batch_size_per_gpu: 32
+    use_kl_loss: true
+    kl_loss_coef: 0.01
+    kl_loss_type: low_var_kl
+    entropy_coeff: 0.001
+    invalid_action_penalty_coef: 0.1
+    optim:
+      lr: 1.0e-6
+  rollout:
+    name: vllm
+    tensor_model_parallel_size: 2
+    gpu_memory_utilization: 0.6
+    enable_chunked_prefill: false
+    enforce_eager: false
+    free_cache_engine: false
+    log_prob_micro_batch_size_per_gpu: 32
+    val_kwargs:
+      temperature: 0.4
+      do_sample: true
+  ref:
+    log_prob_micro_batch_size_per_gpu: 32
+    fsdp_config:
+      param_offload: true
+algorithm:
+  adv_estimator: gigpo
+  use_kl_in_reward: false
+  gigpo:
+    step_advantage_w: 1.0
+    mode: mean_norm
+  rlsd:
+    teacher: peer
+    teacher_role: estimate
+    form: fusion
+    c_mode: corr
+    a_reliability: 0.5
+    rho_decay: 0.9
+    rho_shrink_z: 2.33
+    rlsd_lambda: 0.5
+    warmdown_steps: 100
+    clip_eps: 0.2
+    c_const: 1.0
+    c_prior: 1.0
+    prior_beta: 1.0
+    opsd_gate: 'off'
+    peer_success_threshold: 1.0
+    peer_max_steps: 0
+    peer_hide_answer: false
+    add_clip: 2.0
+    center_delta: true
+env:
+  seed: 0
+  rollout:
+    n: 8
+  search:
+    search_url: ${oc.env:RETRIEVAL_ADDRESS,null}
+    log_requests: false
+trainer:
+  project_name: uniopsd
+  logger: [console]
+  n_gpus_per_node: 8
+  nnodes: 1
+  total_epochs: 300
+  total_training_steps: 150
+  test_freq: 5
+  save_freq: 15
+  max_actor_ckpt_to_keep: 3
+  val_before_train: true
+  resume_mode: disable
+  ray_wait_register_center_timeout: 600
+ray_init:
+  include_dashboard: false
+hydra:
+  job:
+    chdir: false

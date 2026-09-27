@@ -1,0 +1,13 @@
+defaults:
+  - uniopsd
+  - _self_
+
+env:
+  env_name: alfworld/AlfredTWEnv
+  max_steps: 50
+  history_length: 2
+  alfworld:
+    eval_dataset: eval_in_distribution
+
+trainer:
+  experiment_name: alfworld_corr_3b

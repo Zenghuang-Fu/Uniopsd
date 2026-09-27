@@ -1,0 +1,16 @@
+defaults:
+  - alfworld_corr_3b
+  - _self_
+
+actor_rollout_ref:
+  model:
+    path: Qwen/Qwen2.5-7B-Instruct
+  actor:
+    ppo_micro_batch_size_per_gpu: 8
+  rollout:
+    log_prob_micro_batch_size_per_gpu: 8
+    gpu_memory_utilization: 0.5
+  ref:
+    log_prob_micro_batch_size_per_gpu: 8
+trainer:
+  experiment_name: alfworld_corr_7b

@@ -1,0 +1,35 @@
+defaults:
+  - uniopsd
+  - _self_
+
+data:
+  train_files: data/search/train.parquet
+  val_files: data/search/test.parquet
+  train_batch_size: 128
+  val_batch_size: 512
+  max_prompt_length: 4096
+  truncation: left
+actor_rollout_ref:
+  actor:
+    ppo_micro_batch_size_per_gpu: 16
+    kl_loss_coef: 0.001
+    invalid_action_penalty_coef: 0.01
+    optim:
+      lr_warmup_steps_ratio: 0.1
+  rollout:
+    tensor_model_parallel_size: 1
+    gpu_memory_utilization: 0.5
+    val_kwargs:
+      temperature: 0
+      do_sample: false
+algorithm:
+  gigpo:
+    enable_similarity: true
+    similarity_thresh: 0.9
+env:
+  env_name: search
+  max_steps: 4
+  history_length: 4
+
+trainer:
+  experiment_name: search_corr_3b

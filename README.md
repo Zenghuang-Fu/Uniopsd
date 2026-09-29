@@ -101,3 +101,22 @@ python scripts/model_merger.py merge --backend fsdp   --local_dir checkpoints/al
 The release is a source distribution, not a bundle of model weights or experiment outputs. Configuration composition, Python/shell syntax, and available CPU checks are validated during packaging; full distributed training must be run with the required GPUs and benchmark assets. The historical experiments are not rerun as part of packaging.
 
 This project builds on verl, verl-agent/GiGPO, SDAR, ALFWorld, WebShop, and the bundled Search-QA environment. Upstream copyright notices and applicable licenses are retained. Project-maintainer contact metadata, private paths, service addresses, credentials, and Git history are excluded from this release. See `LICENSE`, `Notice.txt`, and applicable vendored notices for license terms.
+
+## Citation
+
+If you use UniOPSD in your research, please cite our [paper](https://arxiv.org/abs/2609.34810):
+
+```bibtex
+@misc{fu2026uniopsd,
+  title         = {{UniOPSD}: Unifying Outcome and Hindsight Feedback for Agentic Reinforcement Learning},
+  author        = {Fu, Zenghuang and Li, Zhaoyang and Ai, Qiuyuan and
+                   Han, Xiaofeng and Zheng, Zelong and Wu, Haoyu and
+                   Fu, Tianyu and Zhao, Chenxu and Wu, Minghui and
+                   He, Guannan and Wang, Changwei},
+  year          = {2026},
+  eprint        = {2609.34810},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2609.34810}
+}
+```
